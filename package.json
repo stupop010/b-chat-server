@@ -1,0 +1,21 @@
+{
+  "name": "node-bchat-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app",
+    "server": "nodemon app"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "~1.4.4",
+    "express": "~4.16.1",
+    "express-validator": "^6.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash.isempty": "^4.4.0",
+    "morgan": "~1.9.1",
+    "mysql2": "^2.0.2",
+    "sequelize": "^5.21.3",
+    "socket.io": "^2.3.0"
+  }
+}
