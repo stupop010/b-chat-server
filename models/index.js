@@ -10,7 +10,7 @@ const models = {
   Project: sequelize.import("./project"),
   Revoked_token: sequelize.import("./revokedToken"),
   User: sequelize.import("./users"),
-  Member: sequelize.import("./member"),
+  ChannelMember: sequelize.import("./channelMember"),
   Message: sequelize.import("./message")
   // Star: sequelize.import("./star")
 };

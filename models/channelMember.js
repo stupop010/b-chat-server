@@ -1,10 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-  const Member = sequelize.define("member", {
+  const ChannelMember = sequelize.define("channel_member", {
     admin: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     }
   });
 
-  return Member;
+  return ChannelMember;
 };

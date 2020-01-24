@@ -97,20 +97,16 @@ router.delete("/", checkAuth, async (req, res) => {
       where: { id: channelId }
     });
 
-    const project = await models.Project.findAll({
-      where: { id: projectId },
-      include: [
-        {
-          model: models.Channel
-        }
-      ]
+    const user = await models.User.findOne({
+      where: { id: req.user.id },
+      include: [{ model: models.Project, include: [{ model: models.Channel }] }]
     });
 
-    res.json(project);
+    const projects = user.getDataValue("projects");
+    res.json(projects);
   } catch (err) {
     console.log(err);
     res.status(500).json({ errors: [{ msg: "Server Error" }] });
   }
-  console.log(channel);
 });
 module.exports = router;

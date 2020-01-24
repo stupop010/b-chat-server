@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     //   1:M
     Channel.belongsTo(models.Project);
     Channel.belongsToMany(models.User, {
-      through: "star",
+      through: "channel_member",
       foreignKey: "channelId"
     });
     Channel.hasMany(models.Message);

@@ -10,7 +10,7 @@ router.post("/", checkAuth, [check("email").isEmail()], async (req, res) => {
   const { name, description } = req.body;
   const { id } = req.user;
   try {
-    const response = await models.sequelize.transaction(async transaction => {
+    const project = await models.sequelize.transaction(async transaction => {
       const project = await models.Project.create(
         {
           name,
@@ -19,17 +19,13 @@ router.post("/", checkAuth, [check("email").isEmail()], async (req, res) => {
         { transaction }
       );
 
-      await models.Channel.create(
+      await models.Channel.bulkCreate([
         {
           name: "general",
           description: "Company-wide announcements and work-related matters",
           private: false,
           projectId: project.id
         },
-        { transaction }
-      );
-
-      await models.Channel.create(
         {
           name: "random",
           description: "Non-work banter and water cooler conversation",
@@ -37,7 +33,26 @@ router.post("/", checkAuth, [check("email").isEmail()], async (req, res) => {
           projectId: project.id
         },
         { transaction }
-      );
+      ]);
+      // await models.Channel.create(
+      //   {
+      //     name: "general",
+      //     description: "Company-wide announcements and work-related matters",
+      //     private: false,
+      //     projectId: project.id
+      //   },
+      //   { transaction }
+      // );
+
+      // await models.Channel.create(
+      //   {
+      //     name: "random",
+      //     description: "Non-work banter and water cooler conversation",
+      //     private: false,
+      //     projectId: project.id
+      //   },
+      //   { transaction }
+      // );
 
       await models.Member.create(
         {
@@ -48,12 +63,21 @@ router.post("/", checkAuth, [check("email").isEmail()], async (req, res) => {
       );
       return project;
     });
+    console.log(project);
 
-    const project = await models.Project.findAll({
-      where: { id: response.id },
-      include: [models.Channel]
+    const projects = await models.Project.findAll({
+      include: [
+        {
+          model: models.User,
+          attributes: { exclude: ["password"] }
+        },
+        {
+          model: models.Channel
+        },
+        { models: models.Member, where: { projectId: project.id } }
+      ]
     });
-    res.json(project);
+    res.json(projects);
   } catch (err) {
     console.log(err);
   }

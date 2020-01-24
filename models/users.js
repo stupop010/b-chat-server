@@ -17,13 +17,14 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = models => {
     User.belongsToMany(models.Project, {
-      through: "member",
+      through: "project_member",
       foreignKey: "userId"
     });
     User.belongsToMany(models.Channel, {
-      through: "star",
+      through: "channel_member",
       foreignKey: "userId"
     });
+    User.hasMany(models.Message);
   };
 
   return User;
