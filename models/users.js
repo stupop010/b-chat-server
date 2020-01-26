@@ -15,17 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  User.associate = models => {
-    User.belongsToMany(models.Project, {
-      through: "project_member",
-      foreignKey: "userId"
-    });
-    User.belongsToMany(models.Channel, {
-      through: "channel_member",
-      foreignKey: "userId"
-    });
-    User.hasMany(models.Message);
-  };
+  // User.associate = models => {
+  //   User.belongsToMany(models.Project, {
+  //     through: "project_members",
+  //     foreignKey: "userId"
+  //   });
+  //   // User.belongsToMany(models.Channel, {
+  //   //   through: "channel_members",
+  //   //   foreignKey: "userId"
+  //   // });
+  //   User.hasMany(models.Message);
+  // };
 
   return User;
 };

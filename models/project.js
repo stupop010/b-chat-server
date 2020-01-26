@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Project.associate = models => {
     Project.belongsToMany(models.User, {
-      through: "project_member",
+      through: "project_members",
       foreignKey: "projectId"
     });
 
