@@ -3,33 +3,9 @@ const router = express.Router();
 
 const models = require("../models");
 const checkAuth = require("../middleware/checkAuth");
+const { deleteChannel, createChannel } = require("../controllers/channel");
 
-router.post("/", checkAuth, async (req, res) => {
-  try {
-    const { name, description, private, projectId } = req.body;
-
-    await models.Channel.create({
-      name,
-      description,
-      private,
-      projectId
-    });
-
-    const project = await models.Project.findAll({
-      where: { id: projectId },
-      include: [
-        {
-          model: models.Channel
-        }
-      ]
-    });
-
-    res.json(project);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ errors: [{ msg: "Server Error" }] });
-  }
-});
+router.post("/", checkAuth, createChannel);
 
 router.get("/", checkAuth, async (req, res) => {
   try {
@@ -38,7 +14,14 @@ router.get("/", checkAuth, async (req, res) => {
     const response = await models.sequelize.transaction(async transaction => {
       const channel = await models.Channel.findAll(
         {
-          where: { id }
+          where: { id },
+          include: [
+            {
+              model: models.User,
+              attributes: { exclude: ["password"] },
+              where: { userId: req.user.id }
+            }
+          ]
         },
         { transaction }
       );
@@ -51,7 +34,6 @@ router.get("/", checkAuth, async (req, res) => {
 
       return { channel, messages };
     });
-
     res.json(response);
   } catch (err) {
     console.log(err);
@@ -89,24 +71,5 @@ router.patch("/", checkAuth, async (req, res) => {
   }
 });
 
-router.delete("/", checkAuth, async (req, res) => {
-  try {
-    const channelId = Number(req.query.data);
-
-    await models.Channel.destroy({
-      where: { id: channelId }
-    });
-
-    const user = await models.User.findOne({
-      where: { id: req.user.id },
-      include: [{ model: models.Project, include: [{ model: models.Channel }] }]
-    });
-
-    const projects = user.getDataValue("projects");
-    res.json(projects);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ errors: [{ msg: "Server Error" }] });
-  }
-});
+router.delete("/", checkAuth, deleteChannel);
 module.exports = router;

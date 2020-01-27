@@ -34,7 +34,7 @@ const loginUser = async (req, res) => {
 
     // If no user return error
     if (!user)
-      res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
 
     const matchPassword = await bcrypt.compare(
       password,
@@ -43,7 +43,7 @@ const loginUser = async (req, res) => {
 
     // If passwords doesn't match, return with error
     if (!matchPassword)
-      res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
 
     const userId = user.getDataValue("id");
 

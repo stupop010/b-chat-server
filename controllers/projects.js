@@ -5,70 +5,64 @@ const createProject = async (req, res, next) => {
   const { name, description } = req.body;
   const userId = req.user.id;
   try {
-    const createProject = await models.sequelize.transaction(
-      async transaction => {
-        const project = await models.Project.create(
-          {
-            name,
-            description
-          },
-          { transaction }
-        );
-
-        const channels = await models.Channel.bulkCreate(
-          [
-            {
-              name: "general",
-              description:
-                "Company-wide announcements and work-related matters",
-              private: false,
-              projectId: project.id
-            },
-            {
-              name: "random",
-              description: "Non-work banter and water cooler conversation",
-              private: false,
-              projectId: project.id
-            }
-          ],
-          { transaction }
-        );
-
-        // Creating the channel member table
-        const channelIds = [];
-        channels.map(x => channelIds.push(x.get("id")));
-        channelMember = channelIds.map(x => ({ channelId: x, userId }));
-        await models.ChannelMember.bulkCreate(channelMember, { transaction });
-
-        // Create project member table
-        const projectId = project.get("id");
-        await models.ProjectMember.create(
-          {
-            projectId,
-            userId,
-            admin: true
-          },
-          { transaction }
-        );
-
-        return project;
-      }
-    );
-
-    const project = await models.Project.findOne({
-      where: {
-        id: createProject.id
-      },
-      include: [
+    await models.sequelize.transaction(async transaction => {
+      const project = await models.Project.create(
         {
-          model: models.User,
-          attributes: { exclude: ["password"] }
+          name,
+          description
         },
+        { transaction }
+      );
+
+      const channels = await models.Channel.bulkCreate(
+        [
+          {
+            name: "general",
+            description: "Company-wide announcements and work-related matters",
+            private: false,
+            projectId: project.id
+          },
+          {
+            name: "random",
+            description: "Non-work banter and water cooler conversation",
+            private: false,
+            projectId: project.id
+          }
+        ],
+        { transaction }
+      );
+
+      // Creating the channel member table
+      const channelIds = [];
+      channels.map(x => channelIds.push(x.get("id")));
+      channelMember = channelIds.map(x => ({
+        channelId: x,
+        userId,
+        admin: true
+      }));
+      await models.ChannelMember.bulkCreate(channelMember, { transaction });
+
+      // Create project member table
+      const projectId = project.get("id");
+      await models.ProjectMember.create(
         {
-          model: models.Channel
-        }
-      ]
+          projectId,
+          userId,
+          admin: true
+        },
+        { transaction }
+      );
+
+      return project;
     });
+
+    const user = await models.User.findOne({
+      where: { id: userId },
+      attributes: { exclude: ["password"] },
+      include: [{ model: models.Project, include: [{ model: models.Channel }] }]
+    });
+
+    const project = user.projects;
     res.json(project);
   } catch (err) {
     console.log(err);
@@ -119,17 +113,14 @@ const addUserToProject = async (req, res, next) => {
 const fetchProject = async (req, res) => {
   const { id } = req.user;
   try {
-    const projects = await models.Project.findAll({
-      include: [
-        {
-          model: models.User,
-          attributes: { exclude: ["password"] }
-        },
-        {
-          model: models.Channel
-        }
-      ]
+    const user = await models.User.findOne({
+      where: { id },
+      attributes: { exclude: ["password"] },
+      include: [{ model: models.Project, include: [{ model: models.Channel }] }]
     });
+
+    const projects = user.projects;
+
     res.json(projects);
   } catch (err) {
     console.log(err);

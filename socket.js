@@ -12,16 +12,14 @@ module.exports = socket = io => {
         userId,
         userName
       });
-      console.log(socket.adapter.rooms[channelId], "hello");
-      console.log(msg.dataValues);
-      console.log(socket.to());
+
       io.sockets.in(channelId).emit("newMessage", { message: msg.dataValues });
     });
 
     socket.on("join", ({ channel }, cb) => {
       const { id, name } = channel;
       socket.join(id);
-      console.log(id);
+
       io.to(id).emit("onlineInChannel", {
         online: socket.adapter.rooms[id]
       });
