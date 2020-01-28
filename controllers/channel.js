@@ -1,5 +1,41 @@
 const models = require("../models");
 
+const fetchChannel = async (req, res) => {
+  try {
+    const id = Number(req.query.id);
+
+    const response = await models.sequelize.transaction(async transaction => {
+      const user = await models.User.findOne(
+        {
+          where: { id: req.user.id },
+          include: [
+            {
+              model: models.Channel
+            }
+          ]
+        },
+        { transaction }
+      );
+      const messages = await models.Message.findAll(
+        {
+          where: { channelId: id }
+        },
+        { transaction }
+      );
+
+      const userData = user.get();
+      const channels = userData.channels.map(channel => channel.dataValues);
+      const channel = channels.filter(channel => channel.id === id)[0];
+
+      return { channel, messages };
+    });
+    res.json(response);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errors: [{ msg: "Server Error" }] });
+  }
+};
+
 const createChannel = async (req, res) => {
   try {
     const { name, description, private, projectId, userId } = req.body;
@@ -47,5 +83,6 @@ const deleteChannel = async (req, res) => {
 
 module.exports = {
   deleteChannel,
-  createChannel
+  createChannel,
+  fetchChannel
 };

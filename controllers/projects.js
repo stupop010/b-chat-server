@@ -92,18 +92,42 @@ const addUserToProject = async (req, res, next) => {
       }
     });
 
+    const projects = await models.Project.findOne({
+      where: { id: projectId },
+      include: [
+        {
+          model: models.Channel
+        }
+      ]
+    });
+
     if (member)
       return res
         .status(400)
         .json({ errors: [{ msg: "User already in project." }] });
 
-    const projectMember = await models.ProjectMember.create({
+    const channels = projects.get("channels");
+    let channelArray = [];
+    channels.map(channel => channelArray.push(channel.dataValues));
+    const channelMember = channelArray.map(channel => ({
+      channelId: channel.id,
       userId,
-      projectId
+      admin: false
+    }));
+
+    await models.sequelize.transaction(async transaction => {
+      await models.ChannelMember.bulkCreate(channelMember, { transaction });
+      await models.ProjectMember.create(
+        {
+          userId,
+          projectId
+        },
+        { transaction }
+      );
     });
 
     // console.log(memberCreated);
-    res.json(projectMember);
+    // res.json(projectMember);
   } catch (err) {
     console.error(err);
     res.status(500).json({ errors: [{ msg: "Server Error" }] });
