@@ -1,4 +1,5 @@
 const models = require("../models");
+const uuidv4 = require("uuid/v4");
 
 const fetchChannel = async (req, res) => {
   try {
@@ -38,13 +39,27 @@ const fetchChannel = async (req, res) => {
 
 const createChannel = async (req, res) => {
   try {
-    const { name, description, private, projectId, userId } = req.body;
-
-    await models.Channel.create({
-      name,
-      description,
-      private,
-      projectId
+    const { name, description, private, projectId } = req.body;
+    const userId = req.user.id;
+    await models.sequelize.transaction(async transaction => {
+      const channel = await models.Channel.create(
+        {
+          name,
+          description,
+          private,
+          channelId: uuidv4(),
+          projectId
+        },
+        { transaction }
+      );
+      await models.ChannelMember.create(
+        {
+          channelId: channel.id,
+          userId,
+          admin: true
+        },
+        { transaction }
+      );
     });
 
     const user = await models.User.findOne({
@@ -68,13 +83,13 @@ const deleteChannel = async (req, res) => {
       where: { id: channelId }
     });
 
-    const user = await models.User.findOne({
-      where: { id: req.user.id },
-      include: [{ model: models.Project, include: [{ model: models.Channel }] }]
-    });
+    // const user = await models.User.findOne({
+    //   where: { id: req.user.id },
+    //   include: [{ model: models.Project, include: [{ model: models.Channel }] }]
+    // });
 
-    const projects = user.getDataValue("projects");
-    res.json(projects);
+    // const projects = user.getDataValue("projects");
+    res.json({ message: "okay" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ errors: [{ msg: "Server Error" }] });

@@ -20,10 +20,25 @@ module.exports = socket = io => {
       const { id, name } = channel;
       socket.join(id);
 
-      io.to(id).emit("onlineInChannel", {
+      io.in(id).emit("onlineInChannel", {
         online: socket.adapter.rooms[id]
       });
-      cb(`Joined channel ${name} id:${id}`);
+      cb(`Joined channel ${name} id: ${id}`);
+    });
+
+    socket.on("join_project", ({ project }, cb) => {
+      const { id, name } = project;
+      socket.join(id);
+      cb(`Joined project ${name} id: ${id}`);
+    });
+
+    socket.on("fetch_project_data", async ({ projectId }) => {
+      const projects = await models.Project.findOne({
+        where: { id: projectId },
+        include: models.Channel
+      });
+      console.log(projects);
+      io.in(projectId).emit("send_project_data", { projects });
     });
 
     socket.on("disconnect", () => {

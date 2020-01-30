@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     private: {
       type: DataTypes.BOOLEAN,
       allowNull: false
+    },
+    channelId: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      unique: true
     }
   });
 
