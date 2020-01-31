@@ -1,5 +1,4 @@
 const models = require("../models");
-const uuidv4 = require("uuid/v4");
 
 const fetchChannel = async (req, res) => {
   try {
@@ -47,7 +46,7 @@ const createChannel = async (req, res) => {
           name,
           description,
           private,
-          channelId: uuidv4(),
+
           projectId
         },
         { transaction }

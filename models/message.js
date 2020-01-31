@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     userName: {
       type: DataTypes.STRING
     },
-    channelId: {
-      type: DataTypes.INTEGER,
+    channelUUID: {
+      type: DataTypes.UUID,
       allowNull: false
     }
   });

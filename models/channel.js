@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false
     },
-    channelId: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       unique: true
     }
   });

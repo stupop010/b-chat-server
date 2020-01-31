@@ -5,10 +5,10 @@ module.exports = socket = io => {
     console.log("connect");
 
     socket.on("message", async data => {
-      const { message, channelId, userId, userName } = data;
+      const { message, channelUUID, userId, userName } = data;
       const msg = await models.Message.create({
         message,
-        channelId,
+        channelUUID,
         userId,
         userName
       });

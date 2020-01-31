@@ -1,7 +1,9 @@
 const { validationResult } = require("express-validator");
+const uuidv4 = require("uuid/v4");
+
 const models = require("../models");
 
-const createProject = async (req, res, next) => {
+const createProject = async (req, res) => {
   const { name, description } = req.body;
   const userId = req.user.id;
   try {
