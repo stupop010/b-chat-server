@@ -2,7 +2,8 @@ const models = require("../models");
 
 const fetchChannel = async (req, res) => {
   try {
-    const id = Number(req.query.id);
+    const uuid = req.query.uuid;
+    console.log(uuid);
 
     const response = await models.sequelize.transaction(async transaction => {
       const user = await models.User.findOne(
@@ -18,14 +19,14 @@ const fetchChannel = async (req, res) => {
       );
       const messages = await models.Message.findAll(
         {
-          where: { channelId: id }
+          where: { channelUUID: uuid }
         },
         { transaction }
       );
 
       const userData = user.get();
       const channels = userData.channels.map(channel => channel.dataValues);
-      const channel = channels.filter(channel => channel.id === id)[0];
+      const channel = channels.filter(channel => channel.uuid === uuid)[0];
 
       return { channel, messages };
     });
