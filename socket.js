@@ -13,17 +13,19 @@ module.exports = socket = io => {
         userName
       });
 
-      io.sockets.in(channelId).emit("newMessage", { message: msg.dataValues });
+      io.sockets
+        .in(channelUUID)
+        .emit("newMessage", { message: msg.dataValues });
     });
 
     socket.on("join", ({ channel }, cb) => {
-      const { id, name } = channel;
-      socket.join(id);
+      const { uuid, name } = channel;
+      socket.join(uuid);
 
-      io.in(id).emit("onlineInChannel", {
-        online: socket.adapter.rooms[id]
+      io.in(uuid).emit("onlineInChannel", {
+        // online: socket.adapter.rooms[id]
       });
-      cb(`Joined channel ${name} id: ${id}`);
+      cb(`Joined channel ${name} id: ${uuid}`);
     });
 
     socket.on("join_project", ({ project }, cb) => {

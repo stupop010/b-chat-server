@@ -3,7 +3,6 @@ const models = require("../models");
 const fetchChannel = async (req, res) => {
   try {
     const uuid = req.query.uuid;
-    console.log(uuid);
 
     const response = await models.sequelize.transaction(async transaction => {
       const user = await models.User.findOne(
