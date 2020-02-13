@@ -13,6 +13,8 @@ const authRouter = require("./routes/auth");
 const projectRouter = require("./routes/project");
 const channelRouter = require("./routes/channel");
 
+const { notFound, errorHandler } = require("./middleware/middlewares");
+
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server);
@@ -20,6 +22,8 @@ const PORT = process.env.PORT || config.PORT;
 
 app.use(morgan("common"));
 app.use(helmet());
+app.use(notFound);
+app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
