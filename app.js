@@ -1,7 +1,7 @@
 const http = require("http");
 const express = require("express");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
+const morgan = require("morgan");
+const helmet = require("helmet");
 
 const models = require("./models");
 const config = require("./config");
@@ -18,10 +18,10 @@ const server = http.createServer(app);
 const io = require("socket.io")(server);
 const PORT = process.env.PORT || config.PORT;
 
-app.use(logger("dev"));
+app.use(morgan("common"));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use("/api/project", projectRouter);
 app.use("/api/register", registerRouter);

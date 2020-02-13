@@ -18,8 +18,4 @@ router.post(
   loginUser
 );
 
-router.post("/token", async (req, res) => {
-  console.log(req);
-});
-
 module.exports = router;

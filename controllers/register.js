@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
-const models = require("../models");
 const jwtSign = require("../utils/jwtSign");
+const models = require("../models");
 
 const registerUser = async (req, res, next) => {
   const errors = validationResult(req);
@@ -36,6 +36,7 @@ const registerUser = async (req, res, next) => {
     const userId = user.getDataValue("id");
 
     // Sign jwt tokens
+
     const response = jwtSign(userId);
 
     res.json(response);

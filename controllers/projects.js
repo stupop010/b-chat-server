@@ -1,6 +1,4 @@
 const { validationResult } = require("express-validator");
-const uuidv4 = require("uuid/v4");
-
 const models = require("../models");
 
 const createProject = async (req, res) => {
@@ -128,8 +126,7 @@ const addUserToProject = async (req, res, next) => {
       );
     });
 
-    // console.log(memberCreated);
-    // res.json(projectMember);
+    res.json({ msg: "OK" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ errors: [{ msg: "Server Error" }] });

@@ -18,6 +18,12 @@ module.exports = socket = io => {
         .emit("newMessage", { message: msg.dataValues });
     });
 
+    socket.on("edit_message", async data => {
+      console.log(data);
+      const { message, messageId } = data;
+      // const editMessage  = await
+    });
+
     socket.on("join", ({ channel }, cb) => {
       const { uuid, name } = channel;
       socket.join(uuid);

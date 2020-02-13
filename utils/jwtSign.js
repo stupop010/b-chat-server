@@ -7,12 +7,7 @@ module.exports = id => {
     expiresIn: config.tokenLife
   });
 
-  const refreshToken = jwt.sign(payload, config.refreshTokenSecret, {
-    expiresIn: config.refreshTokenLife
-  });
-
   return (response = {
-    token,
-    refreshToken
+    token
   });
 };
