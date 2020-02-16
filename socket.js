@@ -5,12 +5,13 @@ module.exports = socket = io => {
     console.log("connect");
 
     socket.on("message", async data => {
-      const { message, channelUUID, userId, userName } = data;
+      const { message, channelUUID, userId, userName, channelId } = data;
       const msg = await models.Message.create({
         message,
         channelUUID,
         userId,
-        userName
+        userName,
+        channelId
       });
 
       io.sockets
@@ -18,10 +19,20 @@ module.exports = socket = io => {
         .emit("newMessage", { message: msg.dataValues });
     });
 
-    socket.on("edit_message", async data => {
-      console.log(data);
-      const { message, messageId } = data;
-      // const editMessage  = await
+    socket.on("fetch_messages", async ({ channelId, channelUUID }) => {
+      console.log(channelUUID);
+      try {
+        const messages = await models.Message.findAll({
+          where: {
+            channelId
+          }
+        });
+        io.sockets
+          .in(channelUUID)
+          .emit("fetched_messages", { messages, channelId });
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     socket.on("join", ({ channel }, cb) => {

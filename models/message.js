@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Message.associate = models => {
+    //   1:M
     Message.belongsTo(models.Channel);
   };
 

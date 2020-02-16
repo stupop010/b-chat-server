@@ -8,7 +8,6 @@ const sequelize = new Sequelize(
 const models = {
   Channel: sequelize.import("./channel"),
   Project: sequelize.import("./project"),
-  Revoked_token: sequelize.import("./revokedToken"),
   User: sequelize.import("./users"),
   ProjectMember: sequelize.import("./projectMember"),
   Message: sequelize.import("./message"),

@@ -12,6 +12,7 @@ const registerRouter = require("./routes/register");
 const authRouter = require("./routes/auth");
 const projectRouter = require("./routes/project");
 const channelRouter = require("./routes/channel");
+const messageRouter = require("./routes/message");
 
 const { notFound, errorHandler } = require("./middleware/middlewares");
 
@@ -22,8 +23,6 @@ const PORT = process.env.PORT || config.PORT;
 
 app.use(morgan("common"));
 app.use(helmet());
-app.use(notFound);
-app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -31,6 +30,9 @@ app.use("/api/project", projectRouter);
 app.use("/api/register", registerRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/channel", channelRouter);
+app.use("/api/message", messageRouter);
+app.use(notFound);
+app.use(errorHandler);
 
 socket(io);
 

@@ -12,9 +12,15 @@ router.get("/", function(req, res, next) {
 router.post(
   "/",
   [
-    check("email").isEmail(),
-    check("name").notEmpty(),
-    check("password").isLength({ min: 6 })
+    check("email")
+      .isEmail()
+      .withMessage("email must be a email"),
+    check("name")
+      .notEmpty()
+      .withMessage("name must not be empty"),
+    check("password")
+      .isLength({ min: 6 })
+      .withMessage("password must be at least 6 chars long")
   ],
   registerUser
 );
