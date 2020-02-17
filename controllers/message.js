@@ -21,7 +21,23 @@ const editMessage = async (req, res, next) => {
 
 const createPin = async (req, res, next) => {
   const { messageId, channelId } = req.body.data;
-  console.log(messageId, channelId);
+  try {
+    const message = await models.PinnedMessages.findOne({ where: messageId });
+
+    if (message)
+      return res
+        .status(422)
+        .json({ errors: [{ msg: "Message already Pinned" }] });
+
+    const pinnedMessage = await models.PinnedMessages.create({
+      messageId,
+      channelId
+    });
+
+    res.json(pinnedMessage);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 module.exports = {
