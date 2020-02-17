@@ -11,7 +11,8 @@ const models = {
   User: sequelize.import("./users"),
   ProjectMember: sequelize.import("./projectMember"),
   Message: sequelize.import("./message"),
-  ChannelMember: sequelize.import("./channelMember")
+  ChannelMember: sequelize.import("./channelMember"),
+  PinnedMessages: sequelize.import("./pinnedMessages")
 };
 
 Object.keys(models).forEach(modelName => {

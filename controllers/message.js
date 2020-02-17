@@ -8,16 +8,23 @@ const editMessage = async (req, res, next) => {
         id: messageId
       }
     });
+
     msg.update({
       message
     });
-    console.log(msg);
+
     res.json(msg);
   } catch (error) {
     console.error(error);
   }
 };
 
+const createPin = async (req, res, next) => {
+  const { messageId, channelId } = req.body.data;
+  console.log(messageId, channelId);
+};
+
 module.exports = {
-  editMessage
+  editMessage,
+  createPin
 };

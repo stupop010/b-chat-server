@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
   Message.associate = models => {
     //   1:M
     Message.belongsTo(models.Channel);
+    Message.belongsToMany(models.Channel, {
+      through: "pinned_messages",
+      foreignKey: "messageId"
+    });
   };
 
   return Message;

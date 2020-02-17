@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { editMessage } = require("../controllers/message");
+const checkAuth = require("../middleware/checkAuth");
 
-router.patch("/", editMessage);
+const { editMessage, createPin } = require("../controllers/message");
+
+router.patch("/", checkAuth, editMessage);
+
+router.post("/pinned", checkAuth, createPin);
 
 module.exports = router;

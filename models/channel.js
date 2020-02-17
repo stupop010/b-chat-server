@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       through: "channel_members",
       foreignKey: "channelId"
     });
+    Channel.belongsToMany(models.Message, {
+      through: "pinned_messages",
+      foreignKey: "channelId"
+    });
     Channel.hasMany(models.Message);
   };
 

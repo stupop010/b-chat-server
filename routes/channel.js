@@ -13,15 +13,6 @@ router.post("/", checkAuth, createChannel);
 
 router.get("/", checkAuth, fetchChannel);
 
-router.post("/starred", checkAuth, async (req, res) => {
-  const starred = await models.Star.create({
-    userId: req.user.id,
-    channelId: req.body.id,
-    star: true
-  });
-  console.log(starred);
-});
-
 router.patch("/", checkAuth, async (req, res) => {
   const { name, description, id } = req.body;
 

@@ -20,7 +20,6 @@ module.exports = socket = io => {
     });
 
     socket.on("fetch_messages", async ({ channelId, channelUUID }) => {
-      console.log(channelUUID);
       try {
         const messages = await models.Message.findAll({
           where: {
