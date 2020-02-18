@@ -3,10 +3,11 @@ const models = require("../models");
 const fetchPinnedMessage = async (req, res, next) => {
   const { channelId } = req.query;
   try {
-    const messages = await models.PinnedMessages.findAll({
+    const messages = await models.Channel.findOne({
       where: {
-        channelId
-      }
+        id: channelId
+      },
+      include: [{ model: models.Message }]
     });
     res.json(messages);
   } catch (error) {
