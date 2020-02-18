@@ -1,5 +1,20 @@
 const models = require("../models");
 
+const fetchPinnedMessage = async (req, res, next) => {
+  const { channelId } = req.query;
+  try {
+    const messages = await models.PinnedMessages.findAll({
+      where: {
+        channelId
+      }
+    });
+    res.json(messages);
+  } catch (error) {
+    next(error);
+    console.error(error);
+  }
+};
+
 const editMessage = async (req, res, next) => {
   const { message, messageId } = req.body;
   try {
@@ -15,6 +30,7 @@ const editMessage = async (req, res, next) => {
 
     res.json(msg);
   } catch (error) {
+    next(error);
     console.error(error);
   }
 };
@@ -36,11 +52,13 @@ const createPin = async (req, res, next) => {
 
     res.json(pinnedMessage);
   } catch (error) {
+    next(error);
     console.error(error);
   }
 };
 
 module.exports = {
+  fetchPinnedMessage,
   editMessage,
   createPin
 };
